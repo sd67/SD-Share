@@ -4,6 +4,8 @@
 ## for users who do not have homedrives.
 ##------------------------------------------------------
 ## original script matt williams 2019-08-12
+## CHANGES
+## 2019-08-14 mw : set home drive of AD User.
 ##------------------------------------------------------
 
 $Users = Get-ADUser -Filter {(Enabled -eq "True") -and ((EmployeeType -eq "Staff") -or (EmployeeType -eq "Student"))} -Properties * | Where-Object {$_.homedirectory -eq $null}
@@ -14,8 +16,8 @@ ForEach ($User in $Users){
         #if it is staff set the path
         if ($User.idautoPersonPriLocCode -eq 6715003){
             #if it is Naramata set the path to this:
-            #$DFSPath = "\\$Domain\Users\Staff\$User.name"
-            #$FSPath = "\\$Domain\Users\Staff\$User.name"
+            $DFSPath = "\\$Domain\Users\Staff\$User.name"
+            $FSPath = "\\$Domain\Users\Staff\$User.name"
         }Else{
             #if it is not Naramata set the path to this:
             $DFSPath = "\\$Domain\Users\Staff\$User.name"
@@ -26,8 +28,8 @@ ForEach ($User in $Users){
         #if it is student set the path
         if ($User.idautoPersonPriLocCode -eq 6715003){
             #if it is Naramata set the path to this:
-            #$DFSPath = "\\$Domain\Users\Students\$User.name"
-            #$FSPath = "\\$Domain\Users\Students\$User.name"
+            $DFSPath = "\\$Domain\Users\Students\$User.name"
+            $FSPath = "\\$Domain\Users\Students\$User.name"
         }Else{
             #if it is not Naramata set the path to this:
             $DFSPath = "\\$Domain\Users\Students\$User.name"
@@ -51,10 +53,11 @@ ForEach ($User in $Users){
         New-DfsnFolder @NewDFSFolder
 
         # Check that folder now exists:
-        Get-DfsnFolderTarget -Path $DFSPath
+        $homedir = Get-DfsnFolderTarget -Path $DFSPath
 
-        # Check that the new DFS Link works using Windows Explorer
-        Invoke-Expression "explorer $DFSPath"
+        Set-ADUser -Identity $User.Name -HomeDrive 'W:' -HomeDirectory $homedir
+        
+        
     }
 
 }
