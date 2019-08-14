@@ -8,14 +8,14 @@
 
 $Users = Get-ADUser -Filter {(Enabled -eq "True") -and ((EmployeeType -eq "Staff") -or (EmployeeType -eq "Student"))} -Properties * | Where-Object {$_.homedirectory -eq $null}
 
-$Domain = 'sd67.edu'
+$Domain = '<domain>'
 ForEach ($User in $Users){
     if ($User.employeeType -eq 'Staff'){
         #if it is staff set the path
         if ($User.idautoPersonPriLocCode -eq 6715003){
             #if it is Naramata set the path to this:
-            $DFSPath = "\\$Domain\Users\Staff\$User.name"
-            $FSPath = "\\$Domain\Users\Staff\$User.name"
+            #$DFSPath = "\\$Domain\Users\Staff\$User.name"
+            #$FSPath = "\\$Domain\Users\Staff\$User.name"
         }Else{
             #if it is not Naramata set the path to this:
             $DFSPath = "\\$Domain\Users\Staff\$User.name"
@@ -26,8 +26,8 @@ ForEach ($User in $Users){
         #if it is student set the path
         if ($User.idautoPersonPriLocCode -eq 6715003){
             #if it is Naramata set the path to this:
-            $DFSPath = "\\$Domain\Users\Students\$User.name"
-            $FSPath = "\\$Domain\Users\Students\$User.name"
+            #$DFSPath = "\\$Domain\Users\Students\$User.name"
+            #$FSPath = "\\$Domain\Users\Students\$User.name"
         }Else{
             #if it is not Naramata set the path to this:
             $DFSPath = "\\$Domain\Users\Students\$User.name"
